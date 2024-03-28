@@ -1,10 +1,6 @@
 # Lang Smith Java API Library
 
-<!-- x-release-please-start-version -->
-
 [![Maven Central](https://img.shields.io/maven-central/v/com.langsmith.api/langsmith-java)](https://central.sonatype.com/artifact/com.langsmith.api/langsmith-java/0.0.1-alpha.0)
-
-<!-- x-release-please-end -->
 
 The Lang Smith Java SDK provides convenient access to the Lang Smith REST API from applications written in Java. It includes helper classes with helpful types and documentation for every request and response property.
 
@@ -12,7 +8,7 @@ The Lang Smith Java SDK is similar to the Lang Smith Kotlin SDK but with minor d
 
 ## Documentation
 
-The REST API documentation can be found [on docs.langsmith.com](https://docs.LangSmith.com).
+The REST API documentation can be found [on docs.langsmith.com](https://api.smith.langchain.com/redoc).
 
 ---
 
@@ -21,8 +17,6 @@ The REST API documentation can be found [on docs.langsmith.com](https://docs.La
 ### Install dependencies
 
 #### Gradle
-
-<!-- x-release-please-start-version -->
 
 ```kotlin
 implementation("com.langsmith.api:langsmith-java:0.0.1-alpha.0")
@@ -37,8 +31,6 @@ implementation("com.langsmith.api:langsmith-java:0.0.1-alpha.0")
     <version>0.0.1-alpha.0</version>
 </dependency>
 ```
-
-<!-- x-release-please-end -->
 
 ### Configure the client
 
@@ -71,7 +63,19 @@ LangSmithClient client = LangSmithOkHttpClient.builder()
 
 Read the documentation for more configuration options.
 
+You can also set the `LANGCHAIN_PROJECT` to post runs to a specific project.
+If unspecified, runs will be posted to the `default` project.
+
+| Property | Environment variable | Required | Default value |
+| -------- | -------------------- | -------- | ------------- |
+| project  | `LANGCHAIN_PROJECT`  | false    | —             |
+
 ---
+
+### Example: using the RunTree API (experimental)
+The RunTree API is currently the recommended way to post runs to LangSmith.
+
+See a full example in the [here](./examples/src/main/java/com/langsmith/example/OpenAiExample.java).
 
 ### Example: creating a resource
 
@@ -157,22 +161,22 @@ This library throws exceptions in a single hierarchy for easy handling:
 
 - **`LangSmithException`** - Base exception for all exceptions
 
-  - **`LangSmithServiceException`** - HTTP errors with a well-formed response body we were able to parse. The exception message and the `.debuggingRequestId()` will be set by the server.
+    - **`LangSmithServiceException`** - HTTP errors with a well-formed response body we were able to parse. The exception message and the `.debuggingRequestId()` will be set by the server.
 
-    | 400    | BadRequestException           |
-    | ------ | ----------------------------- |
-    | 401    | AuthenticationException       |
-    | 403    | PermissionDeniedException     |
-    | 404    | NotFoundException             |
-    | 422    | UnprocessableEntityException  |
-    | 429    | RateLimitException            |
-    | 5xx    | InternalServerException       |
-    | others | UnexpectedStatusCodeException |
+      | 400    | BadRequestException           |
+          | ------ | ----------------------------- |
+      | 401    | AuthenticationException       |
+      | 403    | PermissionDeniedException     |
+      | 404    | NotFoundException             |
+      | 422    | UnprocessableEntityException  |
+      | 429    | RateLimitException            |
+      | 5xx    | InternalServerException       |
+      | others | UnexpectedStatusCodeException |
 
-  - **`LangSmithIoException`** - I/O networking errors
-  - **`LangSmithInvalidDataException`** - any other exceptions on the client side, e.g.:
-    - We failed to serialize the request body
-    - We failed to parse the response body (has access to response code and body)
+    - **`LangSmithIoException`** - I/O networking errors
+    - **`LangSmithInvalidDataException`** - any other exceptions on the client side, e.g.:
+        - We failed to serialize the request body
+        - We failed to parse the response body (has access to response code and body)
 
 ## Network options
 
